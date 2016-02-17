@@ -1,0 +1,17 @@
+{
+  "name": "js1k-16",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "budo index.js --live"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "budo": "^8.0.0"
+  }
+}
