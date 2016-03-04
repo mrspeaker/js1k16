@@ -122,115 +122,43 @@
       // "press" reload button on orientation change?
       var TOKEN_RELOAD_ONORIENTATIONCHANGE = true;
     </script>
-    <script type="demo">
-      // THIS IS WHERE YOUR DEMO GOES
-      var syn = speechSynthesis;
-      var bpm = 923;
-      var words = document.currentScript.innerText
-        .split("\n")
-        .filter(function(o) { return o !== "  " && o !== " " && o !== ""; })
-        .reduce(function (all, e, i) {
-          var line = e.replace(/\./g, " dot ").replace(/\(/g, " (").replace(/\)/g, ") ").replace(/([a-z](?=[A-Z]))/g, '$1 ').split(" ");
-          line.forEach(function (word) {
-            if (word.replace(/\s/g, '') !== "") {
-              all.push(word);
-            }
-          });
-          return all;
-        }, []);
+    <script type="demo" id="__d">
+// THIS IS WHERE YOUR DEMO GOES
+var syn = speechSynthesis, bip = 923, words = document.currentScript.innerText
+.split("\n")
+.filter(function(o){ return o != "  " && o != " " && o != ""})
+.reduce(function (all, e, i) {
+var line = e.replace(/\./g," dot ").replace(/\(/g," (").replace(/\)/g,") ").replace(/([a-z](?=[A-Z]))/g,'$1 ').split(" ");
+line.forEach(function (word){if(word.replace(/\s/g,'')!==""){all.push(word);}}); return all;},[]);
 
-      var cr = "create"
-      var o = cr + "Oscillator";
-
-      var x = new AudioContext();
-      function kik (time) {
-	      var osc = x[o]();
-      	var gain = x[cr+"Gain"]();
-      	osc.connect(gain);
-      	gain.connect(x.destination)
-        osc.frequency.setValueAtTime(150, time);
-      	gain.gain.setValueAtTime(1, time);
-
-      	osc.frequency.exponentialRampToValueAtTime(0.01, time + 0.5);
-      	gain.gain.exponentialRampToValueAtTime(0.001, time + 0.5);
-
-      	osc.start(time);
-      	osc.stop(time + 0.501);
-      }
-
-      c.fillStyle = "#000";
-      c.font = "60pt monospace";
-      c.shadowBlur = 7;
-
-      function note (freq, at, vol) {
-        setTimeout(function () {
-          var osc = x[o]();
-          //osc.type = "square";
-          var gain = x.createGain();
-          gain.gain.value = vol;
-          osc.connect(gain);
-          gain.connect(x.destination);
-          osc.frequency.value = freq;
+var x = new AudioContext(), k="create", o=k+"Oscillator", now = "currentTime", t = "connect", f="frequency", cg=k+"Gain",m=x[cg](); m[t](x.destination);
+m.gain.value = 1;
+function kik(i){
+  var osc = x[o](),gain=x[cg]();gain.gain.value = 1.5;osc[t](gain);gain[t](m);
+  osc[f].setValueAtTime(140,i);
+	gain.gain.setValueAtTime(1,i);
+	osc[f].exponentialRampToValueAtTime(0.01,i+0.3);
+	gain.gain.exponentialRampToValueAtTime(1e-3,i+0.3);osc.start(i);osc.stop(i+0.5);
+}
+function n(q,at,v) {
+  var s=x[o](),g=x[cg](),lfo=x[o](),lfg=x[cg]();
+  g.gain.value=v;s[t](g);g[t](m);s[f].value=q;
+  lfo[f].value=0.05;lfo.start(x[now]);lfg.gain.value=4;lfo[t](lfg);lfg[t](s[f]);s.start(x[now]+at);
+}
+n(110,6,0.8);n(137.5,6,0.2);n(82.5,24,0.6);n(220,24,0.5);n(165,41,0.8);n(55,59,0.8);
+var r=Math.random,i=0;c.font="60pt monospace";c.shadowBlur=7;
+(function l(){if (i<161){
+var off=0.15,t=words[i++];kik(x[now]+off);c.shadowColor=c.fillStyle="hsl("+r()*10+",80%,"+r()*99+"%)";
+c.fillText(t,r()*a.width,r()*a.height);
+syn.cancel();var u=new SpeechSynthesisUtterance(t.toLowerCase());u.rate=1.5;u.pitch=(i/16)%3;syn.speak(u);
+if(i==7)bip/=2;if(i==132)bip*=2;setTimeout(l,bip);}})();
+setInterval("c.scale(1+3e-6,1+1e-6);c.translate(-1e-3,-1e-3);c.drawImage(c.canvas,0,0);",33);</script>
 
 
-          var lfo = x[o]();
-          lfo.frequency.value = 0.005;
-          lfo.start(x.currentTime);
 
-          var lfg = x.createGain();
-          lfg.gain.value = 4;
-          lfo.connect(lfg);
-          lfg.connect(osc.frequency);
 
-          osc.start(x.currentTime);
-        }, at);
-      }
-
-      note(110, bpm * 6.25, 1);
-      note(110 * 1.25, bpm * 6.25, 0.2);
-
-      note(110 * 0.75, bpm * 26, 1);
-      note(110 * 2, bpm * 26, 0.5);
-      note(110 * 1.5, bpm * 46, 1);
-      note(110 * 0.5, bpm * 64, 1);
-
-      var i = 0;
-      function lop () {
-        if (i < words.length-1) {
-          var off = 0.15;
-          kik(x.currentTime + off);
-          //kik(x.currentTime + (bpm/2/1000) + off);
-
-          var t = words[i++];
-          parent.document.title = t;
-          c.fillStyle = "rgba(0,0,0,0.2)";
-          c.fillRect(0, 0, a.width, a.height);
-          c.fillStyle = "hsl(" + (Math.random() * 360 | 0) + ", 50%, 20%)";
-          c.shadowColor = c.fillStyle;
-          c.fillText(t, Math.random() * a.width * 0.8, Math.random() * a.height * 0.8);
-
-          syn.cancel();
-          var utterThis = new SpeechSynthesisUtterance(t.toLowerCase());
-          utterThis.rate = 1.5;
-          utterThis.pitch = (i / 16) % 3;
-          syn.speak(utterThis);
-
-          if (i === 7) bpm /= 2;
-          if (i === 132) bpm *= 2;
-          if (i === 164) bpm /= 2;
-
-          setTimeout(lop, bpm);
-        }
-      }
-      lop();
-
-      setInterval(function () {
-        c.scale(1.000003, 1.000001);
-        c.translate(-0.001, -0.001);
-        c.drawImage(c.canvas, 0, 0);
-      },1000/30);
-
-      // END
+    <script>
+      console.log(1024 - document.getElementById("__d").innerText.length);
     </script>
     <script>
       (function(){var doc=document;var header=doc.getElementsByTagName("header")[0];var firstChild=header.firstChild;var p=doc.getElementsByClassName("p")[0];
