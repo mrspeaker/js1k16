@@ -35,27 +35,16 @@
     <header>
       <div>
         <h1>
-          <a href="http://js1k.com/">JS1k</a>
-          <a href="http://js1k.com/2016-elemental">2016</a>
-          <strong></strong> demo
-          &mdash;
-          "TITLE" by YOU
+          "THIS IS WHERE YOUR DEMO GOES" by @MrSpeaker
         </h1>
         <p>
           <em>
-            FIRST PART OF YOUR DESC GOES HERE
+            Oh. And and, oh.
           </em>
         </p>
         <aside>
           &mdash;
-          1024 bytes
-          &mdash;
-          <a href="http://js1k.com/2016-elemental/details/NNNN">demo details</a>
-          &mdash;
-          <a href="http://js1k.com/2016-elemental/demos">list of demos</a>
-          &mdash;
-          <a href="http://js1k.com/1955" title="short link for your mobile devices" rel="nofollow">js1k.com/NNNN</a>
-          <time datetime="NOW" pubdate>NOW</time>
+          1024 + 500 bytes
         </aside>
       </div>
 
@@ -129,9 +118,9 @@ var syn = speechSynthesis, bip = 923, words = document.currentScript.innerText
 .filter(function(o){ return o != "  " && o != " " && o != ""})
 .reduce(function (all, e, i) {
 var line = e.replace(/\./g," dot ").replace(/\(/g," (").replace(/\)/g,") ").replace(/([a-z](?=[A-Z]))/g,'$1 ').split(" ");
-line.forEach(function (word){if(word.replace(/\s/g,'')!==""){all.push(word);}}); return all;},[]);
+line.forEach(function (word, werd){ if (word.replace(/\s/g,'')!==""){ all.push(word); }}); return all;},[]);
 
-var x = new AudioContext(), k="create", o=k+"Oscillator", now = "currentTime", t = "connect", f="frequency", cg=k+"Gain",m=x[cg](); m[t](x.destination);
+var x = new AudioContext(), k = "create", o = k + "Oscillator", now = "currentTime", t = "connect", f="frequency", cg=k + "Gain", m = x.createGain(); m[t](x.destination);
 m.gain.value = 1;
 function kik(i){
   var osc = x[o](),gain=x[cg]();gain.gain.value = 1.5;osc[t](gain);gain[t](m);
@@ -145,17 +134,18 @@ function n(q,at,v) {
   g.gain.value=v;s[t](g);g[t](m);s[f].value=q;
   lfo[f].value=0.05;lfo.start(x[now]);lfg.gain.value=4;lfo[t](lfg);lfg[t](s[f]);s.start(x[now]+at);
 }
-n(110,6,0.8);n(137.5,6,0.2);n(82.5,24,0.6);n(220,24,0.5);n(165,41,0.8);n(55,59,0.8);
+n(110,6,0.8);n(137.5,6,0.4);
+n(82.5,24.2,0.6);n(220,24.2,0.5);
+n(165,47,0.8);n(55,64,0.8);
 var r=Math.random,i=0;c.font="60pt monospace";c.shadowBlur=7;
-(function l(){if (i<161){
-var off=0.15,t=words[i++];kik(x[now]+off);c.shadowColor=c.fillStyle="hsl("+r()*10+",80%,"+r()*99+"%)";
+(function l(){ if (i<161){
+var off=0.15,t=words[i++];
+parent.document.title = t;
+kik(x[now]+off);c.shadowColor=c.fillStyle="hsl("+r()*10+",80%,"+r()*99+"%)";
 c.fillText(t,r()*a.width,r()*a.height);
 syn.cancel();var u=new SpeechSynthesisUtterance(t.toLowerCase());u.rate=1.5;u.pitch=(i/16)%3;syn.speak(u);
 if(i==7)bip/=2;if(i==132)bip*=2;setTimeout(l,bip);}})();
 setInterval("c.scale(1+3e-6,1+1e-6);c.translate(-1e-3,-1e-3);c.drawImage(c.canvas,0,0);",33);</script>
-
-
-
 
     <script>
       console.log(1024 - document.getElementById("__d").innerText.length);
